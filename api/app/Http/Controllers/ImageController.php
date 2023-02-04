@@ -41,7 +41,7 @@ class ImageController extends Controller
             $save = $image->save();
 
             if($save){
-                header("HTTP/1.1 200 USER CREATED");
+                header("HTTP/1.1 200 IMAGE  UPDATED");
                 $serviceResponse = array(
                     'code' => 200,
                     'status' => 'Success',
