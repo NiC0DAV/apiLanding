@@ -18,9 +18,10 @@ class ReviewController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'description' => 'required',
-            'workDone' => 'required'
+            'workDone' => 'required',
+            'rating' => 'required'
         ]);
-        
+
         if(!$validateRequestData->fails()){
 
             $Review = new Review;
@@ -29,6 +30,7 @@ class ReviewController extends Controller
             $Review->description = $payloadObj->description;
             $Review->workDone = $payloadObj->workDone;
             $Review->ipLocation = $request->ip();
+            $Review->rating = $payloadObj->rating;
             $Review->save();
 
             // Mail::to('esteveznicolas0@gmail.com')->send(new ContactMail($payloadArr));
@@ -79,7 +81,7 @@ class ReviewController extends Controller
         $reviews = Review::where([
             'id' => $id
         ])->first();
-        
+
         if(!$validateRequestData->fails() && is_object($reviews)){
             unset($payloadArr['id']);
             unset($payloadArr['created_at']);
@@ -110,7 +112,7 @@ class ReviewController extends Controller
         $review = Review::where([
             'id' => $id
         ])->first();
-        
+
         if(is_object($review) && $review['reviewStatus'] == 1 || $review['reviewStatus'] == 2){
             $newData['reviewStatus'] = 0;
             $userUpdate = Review::where('id', $id)->update($newData);

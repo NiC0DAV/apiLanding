@@ -20,6 +20,7 @@ return new class extends Migration
             $table->longText('description');
             $table->string('workDone')->nullable();
             $table->string('ipLocation');
+            $table->integer('rating');
             $table->integer('reviewStatus')->default(1);
             $table->timestamps();
         });

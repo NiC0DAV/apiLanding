@@ -25,6 +25,7 @@ class JwtAuth{
 
         try{
             $hashedPass = Hash::check($pass, $user->password);
+
             if ($hashedPass === true && is_object($user)) {
                 $login = true;
             }

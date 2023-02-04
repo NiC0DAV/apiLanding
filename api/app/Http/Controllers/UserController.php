@@ -22,7 +22,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required'
         ]);
-        
+
         if(!$validateRequestData->fails()){
             $hashedPass = Hash::make($payloadObj->password);
 
@@ -96,7 +96,6 @@ class UserController extends Controller
         }
 
         return response()->json($serviceResponse, $serviceResponse['code']);
-
     }
 
     public function userUpdate($id, Request $request){
@@ -116,7 +115,7 @@ class UserController extends Controller
         $user = User::where([
             'id' => $id
         ])->first();
-        
+
         if(!$validateRequestData->fails() && is_object($user)){
             unset($payloadArr['id']);
             unset($payloadArr['created_at']);
@@ -160,7 +159,7 @@ class UserController extends Controller
         $user = User::where([
             'id' => $id
         ])->first();
-        
+
         if(is_object($user) && $user['status'] == 1 || $user['status'] == 2){
             $newData['status'] = 0;
             $newData['rol'] = 0;

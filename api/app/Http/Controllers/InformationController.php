@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class InformationController extends Controller
 {
-    
+
     public function registerWebInformation(Request $request){
         $payload = $request->getContent();
         $payloadObj = json_decode($payload);
@@ -30,15 +30,15 @@ class InformationController extends Controller
 
                 $information = new Information;
                 $information->name = $payloadArr['name'];
-                $information->welcomeSection = $payloadArr['welcomeSection']; 
-                $information->servicesSection = $payloadArr['servicesSection']; 
-                $information->CharacteristicsSection = $payloadArr['CharacteristicsSection']; 
-                $information->footerSection = $payloadArr['footerSection']; 
-                $information->facebookUrl = $payloadArr['facebookUrl']; 
-                $information->instagramUrl = $payloadArr['instagramUrl']; 
-                $information->whatsappNumber = $payloadArr['whatsappNumber']; 
+                $information->welcomeSection = $payloadArr['welcomeSection'];
+                $information->servicesSection = $payloadArr['servicesSection'];
+                $information->CharacteristicsSection = $payloadArr['CharacteristicsSection'];
+                $information->footerSection = $payloadArr['footerSection'];
+                $information->facebookUrl = $payloadArr['facebookUrl'];
+                $information->instagramUrl = $payloadArr['instagramUrl'];
+                $information->whatsappNumber = $payloadArr['whatsappNumber'];
                 $information->save();
-    
+
                 header("HTTP/1.1 200 USER CREATED");
                 $serviceResponse = array(
                     'code' => 200,
@@ -47,7 +47,7 @@ class InformationController extends Controller
                     'data' => $information,
                     'date' => date('Y-m-d H:i:s')
                 );
-    
+
             }else{
                 $serviceResponse = array(
                     'code' => 404,
@@ -96,11 +96,19 @@ class InformationController extends Controller
     public function fetchAllWebInformation(){
         $information = Information::where('status', '<>', '0')->get();
 
-        $serviceResponse = array(
-            'code' => 200,
-            'status' => 'Success',
-            'data' => $information
-        );
+        if(!$information->isEmpty()){
+            $serviceResponse = array(
+                'code' => 200,
+                'status' => 'Success',
+                'data' => $information
+            );
+        }else{
+            $serviceResponse = array(
+                'code' => 400,
+                'status' => 'Error',
+                'data' => null
+            );
+        }
 
         return response()->json($serviceResponse, $serviceResponse['code']);
     }
@@ -134,7 +142,7 @@ class InformationController extends Controller
             $statusQuantity = Information::where([
                 'status' => '2'
             ])->first();
-            
+
             if(is_object($statusQuantity) && $statusQuantity->id != $id){
                 $serviceResponse = array(
                     'code' => 400,
@@ -145,7 +153,7 @@ class InformationController extends Controller
                     unset($payloadArr['id']);
                     unset($payloadArr['created_at']);
                     Information::where('id', $id)->update($payloadArr);
-        
+
                     $serviceResponse = array(
                         'code' => 200,
                         'status' => 'Success',
@@ -156,7 +164,7 @@ class InformationController extends Controller
                     unset($payloadArr['id']);
                     unset($payloadArr['created_at']);
                     Information::where('id', $id)->update($payloadArr);
-        
+
                     $serviceResponse = array(
                         'code' => 200,
                         'status' => 'Success',
@@ -175,7 +183,7 @@ class InformationController extends Controller
             unset($payloadArr['id']);
             unset($payloadArr['created_at']);
             Information::where('id', $id)->update($payloadArr);
-    
+
             $serviceResponse = array(
                 'code' => 200,
                 'status' => 'Success',
@@ -186,7 +194,7 @@ class InformationController extends Controller
             unset($payloadArr['id']);
             unset($payloadArr['created_at']);
             Information::where('id', $id)->update($payloadArr);
-    
+
             $serviceResponse = array(
                 'code' => 200,
                 'status' => 'Success',
@@ -209,7 +217,7 @@ class InformationController extends Controller
         $information = Information::where([
             'id' => $id
         ])->first();
-        
+
         if(is_object($information) && $information['status'] == 1 || $information['status'] == 2){
             $newData['status'] = 0;
             $userUpdate = Information::where('id', $id)->update($newData);

@@ -80,7 +80,7 @@ class ImageController extends Controller
         ->where('imageStatus', '<>', '0')
         ->join('categories', 'images.categoryId', '=', 'categories.id')
         ->get();
-        
+
         $newImage = json_encode($image);
         $newImage = json_decode($newImage, true);
 
@@ -143,7 +143,7 @@ class ImageController extends Controller
 
     public function updateImage(Request $request, $id){
         $payload = $request->all();
-        
+
         $validateRequestData = Validator::make($payload, [
             'image' => 'file|mimes:jpg,png,gif,jpeg,webp|max:10240',
             'imageTitle' => 'string|required',
@@ -154,12 +154,16 @@ class ImageController extends Controller
             'imageStatus' => 'integer|required'
         ]);
 
-        if($request->hasFile('image') && !$validateRequestData->fails()){
-            $completeFileName = $request->file('image')->getClientOriginalName();
-            $fileName = pathinfo($completeFileName, PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
-            $filePrepName = str_replace(' ', '_', $fileName).'-'.rand().'_'.time().'.'.$extension;
-            $path = $request->file('image')->storeAs('public/images', $filePrepName);
+        if(!$validateRequestData->fails()){
+            if($request->hasFile('image')){
+                $completeFileName = $request->file('image')->getClientOriginalName();
+                $fileName = pathinfo($completeFileName, PATHINFO_FILENAME);
+                $extension = $request->file('image')->getClientOriginalExtension();
+                $filePrepName = str_replace(' ', '_', $fileName).'-'.rand().'_'.time().'.'.$extension;
+                $path = $request->file('image')->storeAs('public/images', $filePrepName);
+
+                $payloadArr['pathImage'] = $filePrepName;
+            }
 
             $payloadArr['imageTitle'] = $payload['imageTitle'];
             $payloadArr['imageDescription'] = $payload['imageDescription'];
@@ -167,7 +171,6 @@ class ImageController extends Controller
             $payloadArr['categoryId'] = $payload['categoryId'];
             $payloadArr['sliderStatus'] = $payload['sliderStatus'];
             $payloadArr['imageStatus'] = $payload['imageStatus'];
-            $payloadArr['pathImage'] = $filePrepName;
 
             $update = Image::where('id', $id)->update($payloadArr);
 
@@ -209,7 +212,7 @@ class ImageController extends Controller
         $image = Image::where([
             'id' => $id
         ])->first();
-        
+
         if(is_object($image) && $image['imageStatus'] == 1 || $image['imageStatus'] == 2){
             $newData['imageStatus'] = 0;
             $userUpdate = Image::where('id', $id)->update($newData);

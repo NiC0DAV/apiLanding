@@ -35,13 +35,11 @@ Route::get('getImagesByCategory/{id}', [ImageController::class, 'getImagesByCate
 // Reviews
 Route::post('reviewRegister', [ReviewController::class,'reviewRegister'])->name('reviewRegister');
 Route::get('fetchReviews', [ReviewController::class,'fetchReviews'])->name('fetchReviews');
-
-
-//Prospects 
-Route::post('prospectRegister', [ProspectController::class,'prospectRegister'])->name('prospectRegister');
-
 Route::post('createUser', [UserController::class, 'userRegister'])->name('createUser');
 
+
+//Prospects
+Route::post('prospectRegister', [ProspectController::class,'prospectRegister'])->name('prospectRegister');
 
 Route::group(['middleware' => 'ApiAuthMiddleware'], function () {
     // Users
