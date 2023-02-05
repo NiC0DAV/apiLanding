@@ -28,7 +28,7 @@ class ImageController extends Controller
             $extension = $request->file('image')->getClientOriginalExtension();
             $filePrepName = str_replace(' ', '_', $fileName).'-'.rand().'_'.time().'.'.$extension;
             $path = $request->file('image')->storeAs('public/images', $filePrepName);
-
+            // dd($path);
             $image = new Image;
             $image->imageTitle = $payload['imageTitle'];
             $image->imageDescription = $payload['imageDescription'];
