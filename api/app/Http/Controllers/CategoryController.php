@@ -22,9 +22,9 @@ class CategoryController extends Controller
 
             $category = new Category;
             $category->categoryName = $payloadArr['categoryName'];
-            $category->categoryDescription = $payloadArr['categoryDescription']; 
+            $category->categoryDescription = $payloadArr['categoryDescription'];
             $category->save();
-    
+
             header("HTTP/1.1 200 CATEGORY CREATED");
             $serviceResponse = array(
                 'code' => 200,
@@ -103,7 +103,7 @@ class CategoryController extends Controller
         $category = Category::where([
             'id' => $id
         ])->first();
-        
+
         if(is_object($category) && $category['status'] == 1 || $category['status'] == 2){
             $newData['status'] = 0;
             $userUpdate = Category::where('id', $id)->update($newData);
