@@ -28,7 +28,7 @@ class ImageController extends Controller
             $extension = $request->file('image')->getClientOriginalExtension();
             $filePrepName = str_replace(' ', '_', $fileName).'-'.rand().'_'.time().'.'.$extension;
             $path = $request->file('image')->storeAs('public/images', $filePrepName);
-            // dd($path);
+
             $image = new Image;
             $image->imageTitle = $payload['imageTitle'];
             $image->imageDescription = $payload['imageDescription'];
@@ -149,9 +149,7 @@ class ImageController extends Controller
             'imageTitle' => 'string|required',
             'imageDescription' => 'string|required',
             'shortDescription' => 'string|required',
-            'categoryId' => 'integer|required',
-            'sliderStatus' => 'integer|required',
-            'imageStatus' => 'integer|required'
+            'categoryId' => 'integer|required'
         ]);
 
         if(!$validateRequestData->fails()){
@@ -165,12 +163,15 @@ class ImageController extends Controller
                 $payloadArr['pathImage'] = $filePrepName;
             }
 
+            $payload['imageStatus'] = $payload['imageStatus'] ? $payload['imageStatus'] : 1;
+            $payload['sliderStatus'] = $payload['sliderStatus'] ? $payload['imageStatus'] : 0;
+
             $payloadArr['imageTitle'] = $payload['imageTitle'];
             $payloadArr['imageDescription'] = $payload['imageDescription'];
             $payloadArr['shortDescription'] = $payload['shortDescription'];
             $payloadArr['categoryId'] = $payload['categoryId'];
-            $payloadArr['sliderStatus'] = $payload['sliderStatus'];
-            $payloadArr['imageStatus'] = $payload['imageStatus'];
+            $payloadArr['sliderStatus'] = (int)$payload['sliderStatus'];
+            $payloadArr['imageStatus'] = (int)$payload['imageStatus'];
 
             $update = Image::where('id', $id)->update($payloadArr);
 

@@ -32,7 +32,7 @@ class ContactMail extends Mailable
     {
         return new Envelope(
             subject: 'A New Prospect Email!',
-            from: 'nicodavest@gmai.com'
+            from: 'josevicentediazsusa@gmail.com'
         );
     }
 

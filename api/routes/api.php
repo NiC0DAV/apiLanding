@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ImageController;
 use Illuminate\Http\Request;
@@ -19,6 +19,9 @@ use App\Http\Controllers\ReviewController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('linkstorage', function () {
+    return env('APP_URL');
+});
 
 Route::post('login', [UserController::class, 'login'])->name('login');
 
@@ -36,7 +39,6 @@ Route::get('getImagesByCategory/{id}', [ImageController::class, 'getImagesByCate
 Route::post('reviewRegister', [ReviewController::class,'reviewRegister'])->name('reviewRegister');
 Route::get('fetchReviews', [ReviewController::class,'fetchReviews'])->name('fetchReviews');
 Route::post('createUser', [UserController::class, 'userRegister'])->name('createUser');
-
 
 //Prospects
 Route::post('prospectRegister', [ProspectController::class,'prospectRegister'])->name('prospectRegister');
