@@ -152,6 +152,14 @@ class ImageController extends Controller
             'categoryId' => 'integer|required'
         ]);
 
+        $validateErr = json_encode($validateRequestData->errors());
+
+        $validateErrArr = json_decode($validateErr, true);
+
+        $imageSearch = Image::where([
+            'id' => $id
+        ])->latest()->first();
+
         if(!$validateRequestData->fails()){
             if($request->hasFile('image')){
                 $completeFileName = $request->file('image')->getClientOriginalName();
@@ -164,7 +172,7 @@ class ImageController extends Controller
             }
 
             $payload['imageStatus'] = $payload['imageStatus'] ? $payload['imageStatus'] : 1;
-            $payload['sliderStatus'] = $payload['sliderStatus'] ? $payload['imageStatus'] : 0;
+            $payload['sliderStatus'] = $payload['sliderStatus'] ? $payload['sliderStatus'] : 0;
 
             $payloadArr['imageTitle'] = $payload['imageTitle'];
             $payloadArr['imageDescription'] = $payload['imageDescription'];
@@ -187,7 +195,7 @@ class ImageController extends Controller
             }else{
                 header("HTTP/1.1 404 ERROR UPDATING IMAGE");
                 $serviceResponse = array(
-                    'code' => 200,
+                    'code' => 400,
                     'status' => 'Success',
                     'message' => 'The image could not be updated, try it again.',
                     'data' => $payloadArr,
@@ -195,8 +203,40 @@ class ImageController extends Controller
                 );
             }
 
+        } elseif ($validateRequestData->fails() && !$request->hasFile('image')) {
+            $payload['imageStatus'] = $payload['imageStatus'] ? $payload['imageStatus'] : 1;
+            $payload['sliderStatus'] = $payload['sliderStatus'] ? $payload['sliderStatus'] : 0;
+
+            $payloadArr['imageTitle'] = $payload['imageTitle'];
+            $payloadArr['imageDescription'] = $payload['imageDescription'];
+            $payloadArr['shortDescription'] = $payload['shortDescription'];
+            $payloadArr['categoryId'] = $payload['categoryId'];
+            $payloadArr['sliderStatus'] = (int)$payload['sliderStatus'];
+            $payloadArr['imageStatus'] = (int)$payload['imageStatus'];
+
+            $update = Image::where('id', $id)->update($payloadArr);
+
+            if($update){
+                header("HTTP/1.1 200 IMAGE UPDATED");
+                $serviceResponse = array(
+                    'code' => 200,
+                    'status' => 'Success',
+                    'message' => 'The image has been updated successfully',
+                    'data' => $payloadArr,
+                    'date' => date('Y-m-d H:i:s')
+                );
+            }else{
+                header("HTTP/1.1 404 ERROR UPDATING IMAGE");
+                $serviceResponse = array(
+                    'code' => 400,
+                    'status' => 'Success',
+                    'message' => 'The image could not be updated, try it again.',
+                    'data' => $payloadArr,
+                    'date' => date('Y-m-d H:i:s')
+                );
+            }
         }else{
-            header("HTTP/1.1 404 USER CREATED");
+            header("HTTP/1.1 404 IMAGE UPLOADED");
             $serviceResponse = array(
                 'code' => 404,
                 'status' => 'Error',

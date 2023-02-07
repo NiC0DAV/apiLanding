@@ -119,7 +119,7 @@ class InformationController extends Controller
         $payloadArr = json_decode($payload, true);
 
         $validateRequestData = Validator::make($payloadArr, [
-            'name' => 'string|required|unique:information',
+            'name' => 'string|required',
             'status' => 'string|required',
             'welcomeSection' => 'array|required',
             'servicesSection' => 'array|required',
@@ -160,7 +160,7 @@ class InformationController extends Controller
                         'message' => 'The information has been updated successfully.',
                         'data' => $payloadArr
                     );
-                }else if(count($validateErrArr) == '1' && array_key_exists('categoryName', $validateErrArr) && $information->name == $payloadObj->name){
+                }elseif(count($validateErrArr) == '1' && array_key_exists('name', $validateErrArr) && $information->name == $payloadObj->name){
                     unset($payloadArr['id']);
                     unset($payloadArr['created_at']);
                     Information::where('id', $id)->update($payloadArr);
